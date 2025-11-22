@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   CheckCircle2,
   Video,
@@ -14,8 +14,17 @@ import {
   Loader2
 } from 'lucide-react';
 import stripePromise from './stripe';
+import SuccessPage from './SuccessPage';
 
 function App() {
+  // Check if we're on the success page
+  const urlParams = new URLSearchParams(window.location.search);
+  const isSuccessPage = urlParams.has('session_id');
+
+  // Show success page if session_id is in URL
+  if (isSuccessPage) {
+    return <SuccessPage />;
+  }
   // Form state
   const [formData, setFormData] = useState({
     name: '',
