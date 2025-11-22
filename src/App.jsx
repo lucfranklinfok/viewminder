@@ -15,14 +15,24 @@ import {
 } from 'lucide-react';
 import stripePromise from './stripe';
 import SuccessPage from './SuccessPage';
+import StatusTracker from './StatusTracker';
+import Apply from './Apply';
 
 function App() {
-  // Check if we're on the success page
+  // Simple routing based on URL path
+  const path = window.location.pathname;
   const urlParams = new URLSearchParams(window.location.search);
-  const isSuccessPage = urlParams.has('session_id');
 
-  // Show success page if session_id is in URL
-  if (isSuccessPage) {
+  // Route to different pages
+  if (path === '/status' || path === '/status/') {
+    return <StatusTracker />;
+  }
+
+  if (path === '/apply' || path === '/apply/') {
+    return <Apply />;
+  }
+
+  if (urlParams.has('session_id')) {
     return <SuccessPage />;
   }
   // Form state
@@ -246,12 +256,20 @@ function App() {
               and ensure you get on the agent's application list. Serving Bondi, Newtown,
               Surry Hills, and surrounds.
             </p>
-            <button
-              onClick={scrollToBooking}
-              className="bg-white text-primary-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-primary-50 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all"
-            >
-              Book Your ViewMinder (Starts at $39)
-            </button>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button
+                onClick={scrollToBooking}
+                className="bg-white text-primary-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-primary-50 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all"
+              >
+                Book Your ViewMinder (Starts at $39)
+              </button>
+              <a
+                href="/status"
+                className="bg-primary-700 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-primary-800 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all text-center"
+              >
+                Check Status
+              </a>
+            </div>
           </div>
         </div>
       </section>
@@ -635,40 +653,39 @@ function App() {
             </div>
 
             <div>
-              <h4 className="text-white font-semibold mb-4">Legal</h4>
+              <h4 className="text-white font-semibold mb-4">Quick Links</h4>
               <ul className="space-y-2 text-sm">
                 <li>
                   <a
-                    href="#terms"
+                    href="/status"
                     className="hover:text-primary-400 transition-colors"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      alert('Terms of Service would be displayed here');
-                    }}
+                  >
+                    Check Booking Status
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/TERMS_OF_SERVICE.md"
+                    className="hover:text-primary-400 transition-colors"
+                    target="_blank"
                   >
                     Terms of Service
                   </a>
                 </li>
                 <li>
                   <a
-                    href="#refund"
+                    href="/REFUND_POLICY.md"
                     className="hover:text-primary-400 transition-colors"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      alert('Refund Policy would be displayed here');
-                    }}
+                    target="_blank"
                   >
                     Refund Policy
                   </a>
                 </li>
                 <li>
                   <a
-                    href="#privacy"
+                    href="/PRIVACY_POLICY.md"
                     className="hover:text-primary-400 transition-colors"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      alert('Privacy Policy would be displayed here');
-                    }}
+                    target="_blank"
                   >
                     Privacy Policy
                   </a>
@@ -679,12 +696,8 @@ function App() {
             <div>
               <h4 className="text-white font-semibold mb-4">Join Our Team</h4>
               <a
-                href="#become-agent"
+                href="/apply"
                 className="inline-block bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors text-sm font-medium"
-                onClick={(e) => {
-                  e.preventDefault();
-                  alert('Agent application form would be displayed here');
-                }}
               >
                 Become a ViewMinder Agent
               </a>
