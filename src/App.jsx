@@ -124,8 +124,18 @@ function App() {
     if (!formData.suburb) newErrors.suburb = 'Please select a suburb';
     if (!formData.propertyLink.trim()) {
       newErrors.propertyLink = 'Property link is required';
-    } else if (!/^https?:\/\/.+/.test(formData.propertyLink)) {
-      newErrors.propertyLink = 'Please enter a valid URL';
+    } else {
+      // Auto-fix URL if needed before validation
+      let urlToValidate = formData.propertyLink;
+      if (!urlToValidate.match(/^https?:\/\//)) {
+        urlToValidate = `https://${urlToValidate}`;
+        // Update formData with the fixed URL
+        setFormData(prev => ({ ...prev, propertyLink: urlToValidate }));
+      }
+      // Basic URL validation - check for domain pattern
+      if (!urlToValidate.match(/^https?:\/\/.+\..+/)) {
+        newErrors.propertyLink = 'Please enter a valid property listing URL';
+      }
     }
     if (!formData.inspectionDate) newErrors.inspectionDate = 'Inspection date is required';
     if (!formData.inspectionTime) newErrors.inspectionTime = 'Inspection time is required';
