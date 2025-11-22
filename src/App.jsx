@@ -144,8 +144,8 @@ function App() {
       // Get the selected pricing tier details
       const selectedTier = pricingTiers.find(tier => tier.id === formData.pricingTier);
 
-      // In production, you would call your backend API to create a Stripe Checkout session
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+      // Call Vercel serverless function to create Stripe Checkout session
+      const apiUrl = import.meta.env.VITE_API_URL || window.location.origin;
 
       const response = await fetch(`${apiUrl}/api/create-checkout-session`, {
         method: 'POST',
