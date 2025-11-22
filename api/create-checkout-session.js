@@ -76,7 +76,10 @@ export default async function handler(req, res) {
       billing_address_collection: 'auto',
     });
 
-    res.status(200).json({ sessionId: session.id });
+    res.status(200).json({
+      sessionId: session.id,
+      url: session.url
+    });
   } catch (error) {
     console.error('Error creating checkout session:', error);
     res.status(500).json({
