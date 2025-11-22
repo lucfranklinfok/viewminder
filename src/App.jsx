@@ -87,9 +87,17 @@ function App() {
   // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
+
+    let processedValue = value;
+
+    // Auto-fix URL input - add https:// if missing
+    if (name === 'propertyLink' && value && !value.match(/^https?:\/\//)) {
+      processedValue = `https://${value}`;
+    }
+
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === 'checkbox' ? checked : processedValue
     }));
 
     // Clear error for this field
@@ -469,7 +477,7 @@ function App() {
                     Property Listing Link *
                   </label>
                   <input
-                    type="url"
+                    type="text"
                     id="propertyLink"
                     name="propertyLink"
                     value={formData.propertyLink}
@@ -477,8 +485,11 @@ function App() {
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
                       errors.propertyLink ? 'border-red-500' : 'border-gray-300'
                     }`}
-                    placeholder="https://www.domain.com.au/..."
+                    placeholder="www.domain.com.au/12345-bondi-road or paste full URL"
                   />
+                  <p className="mt-1 text-xs text-gray-500">
+                    Paste the link from Domain, realestate.com.au, or any property website
+                  </p>
                   {errors.propertyLink && (
                     <p className="mt-1 text-sm text-red-600">{errors.propertyLink}</p>
                   )}
