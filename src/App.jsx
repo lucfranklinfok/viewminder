@@ -10,8 +10,10 @@ import {
   Calendar,
   Link as LinkIcon,
   User,
-  DollarSign
+  DollarSign,
+  Loader2
 } from 'lucide-react';
+import stripePromise from './stripe';
 
 function App() {
   // Form state
@@ -28,6 +30,7 @@ function App() {
   });
 
   const [errors, setErrors] = useState({});
+  const [isProcessing, setIsProcessing] = useState(false);
 
   // Hardcoded suburbs for operational safety
   const suburbs = [
@@ -124,18 +127,79 @@ function App() {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Handle form submission
-  const handleSubmit = (e) => {
+  // Handle form submission with Stripe Checkout
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (validateForm()) {
-      // In production, this would connect to Stripe Checkout
-      console.log('Form submitted:', formData);
-      alert('Redirecting to secure Stripe checkout...\n\n(In production, this would open Stripe Checkout)');
-    } else {
+    if (!validateForm()) {
       // Scroll to first error
       const firstErrorField = Object.keys(errors)[0];
       document.getElementById(firstErrorField)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    setIsProcessing(true);
+
+    try {
+      // Get the selected pricing tier details
+      const selectedTier = pricingTiers.find(tier => tier.id === formData.pricingTier);
+
+      // In production, you would call your backend API to create a Stripe Checkout session
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+
+      const response = await fetch(`${apiUrl}/api/create-checkout-session`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          pricingTier: formData.pricingTier,
+          price: selectedTier.price,
+          customerEmail: formData.email,
+          customerName: formData.name,
+          metadata: {
+            mobile: formData.mobile,
+            suburb: formData.suburb,
+            propertyLink: formData.propertyLink,
+            inspectionDate: formData.inspectionDate,
+            inspectionTime: formData.inspectionTime,
+            pricingTierName: selectedTier.name
+          }
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create checkout session');
+      }
+
+      const { sessionId } = await response.json();
+
+      // Redirect to Stripe Checkout
+      const stripe = await stripePromise;
+      const { error } = await stripe.redirectToCheckout({ sessionId });
+
+      if (error) {
+        console.error('Stripe redirect error:', error);
+        alert('Payment error: ' + error.message);
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+
+      // For development/demo: show alert if backend is not set up
+      if (error.message.includes('fetch') || error.message.includes('Failed to create')) {
+        alert(
+          'Backend API not configured.\n\n' +
+          'To complete Stripe integration:\n' +
+          '1. Set up a backend API endpoint\n' +
+          '2. Add VITE_API_URL to your environment variables\n' +
+          '3. Configure Stripe secret key on your backend\n\n' +
+          'See README.md for detailed instructions.'
+        );
+      } else {
+        alert('An error occurred. Please try again.');
+      }
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -514,10 +578,17 @@ function App() {
 
               <button
                 type="submit"
-                className="w-full bg-primary-600 text-white py-4 px-8 rounded-lg text-lg font-semibold hover:bg-primary-700 focus:outline-none focus:ring-4 focus:ring-primary-300 transition-colors shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={!formData.termsAgreed}
+                className="w-full bg-primary-600 text-white py-4 px-8 rounded-lg text-lg font-semibold hover:bg-primary-700 focus:outline-none focus:ring-4 focus:ring-primary-300 transition-colors shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                disabled={!formData.termsAgreed || isProcessing}
               >
-                Pay Now (Secure Stripe Checkout)
+                {isProcessing ? (
+                  <>
+                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  'Pay Now (Secure Stripe Checkout)'
+                )}
               </button>
 
               <p className="text-xs text-gray-500 text-center mt-3">
