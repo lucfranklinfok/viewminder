@@ -10,6 +10,8 @@ import {
 import SuccessPage from './SuccessPage';
 import StatusTracker from './StatusTracker';
 import Apply from './Apply';
+import Terms from './Terms';
+import Privacy from './Privacy';
 
 function App() {
   // Simple routing based on URL path
@@ -23,6 +25,14 @@ function App() {
 
   if (path === '/apply' || path === '/apply/') {
     return <Apply />;
+  }
+
+  if (path === '/terms' || path === '/terms/') {
+    return <Terms />;
+  }
+
+  if (path === '/privacy' || path === '/privacy/') {
+    return <Privacy />;
   }
 
   if (urlParams.has('session_id')) {
@@ -466,7 +476,7 @@ function App() {
                   required
                 />
                 <label htmlFor="agreedToTerms" className="ml-3 text-sm text-slate-600">
-                  I agree to the <a href="/TOS.md" target="_blank" className="text-teal-600 hover:text-teal-700 underline font-medium">Terms of Service</a> and Refund Policy.
+                  I agree to the <a href="/terms" className="text-teal-600 hover:text-teal-700 underline font-medium">Terms of Service</a> and Refund Policy.
                 </label>
               </div>
               {errors.agreedToTerms && <p className="mt-1 text-sm text-red-600">{errors.agreedToTerms}</p>}
@@ -496,8 +506,8 @@ function App() {
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-sm">
           <p className="mb-4 md:mb-0">&copy; {new Date().getFullYear()} ViewMinder. Sydney-based & Insured.</p>
           <div className="space-x-4">
-            <a href="/TOS.md" target="_blank" className="text-slate-400 hover:text-teal-400 transition">Terms of Service & Refund Policy</a>
-            <a href="/PRIVACY_POLICY.md" target="_blank" className="text-slate-400 hover:text-teal-400 transition">Privacy Policy</a>
+            <a href="/terms" className="text-slate-400 hover:text-teal-400 transition">Terms of Service & Refund Policy</a>
+            <a href="/privacy" className="text-slate-400 hover:text-teal-400 transition">Privacy Policy</a>
             <a href="/apply" className="text-teal-400 hover:text-teal-300 transition font-medium">Become a ViewMinder Agent</a>
           </div>
         </div>
