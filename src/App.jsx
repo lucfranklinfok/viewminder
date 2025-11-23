@@ -601,16 +601,13 @@ function App() {
                   <span className="ml-3 text-sm text-gray-700">
                     I agree to the{' '}
                     <a
-                      href="#terms"
+                      href="/TOS.md"
+                      target="_blank"
                       className="text-primary-600 hover:text-primary-700 underline font-medium"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        alert('Terms of Service would be displayed here');
-                      }}
                     >
-                      Terms of Service
+                      Terms of Service and Refund Policy
                     </a>
-                    {' '}and Refund Policy *
+                    {' '}*
                   </span>
                 </label>
                 {errors.termsAgreed && (
@@ -665,20 +662,11 @@ function App() {
                 </li>
                 <li>
                   <a
-                    href="/TERMS_OF_SERVICE.md"
+                    href="/TOS.md"
                     className="hover:text-primary-400 transition-colors"
                     target="_blank"
                   >
-                    Terms of Service
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/REFUND_POLICY.md"
-                    className="hover:text-primary-400 transition-colors"
-                    target="_blank"
-                  >
-                    Refund Policy
+                    Terms of Service & Refund Policy
                   </a>
                 </li>
                 <li>
