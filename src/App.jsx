@@ -170,7 +170,11 @@ function App() {
       const selectedTier = pricingTiers.find(tier => tier.id === formData.pricingTier);
 
       // Call Vercel serverless function to create Stripe Checkout session
-      const apiUrl = import.meta.env.VITE_API_URL || window.location.origin;
+      // Use production API when running locally (dev server doesn't have API routes)
+      const apiUrl = import.meta.env.VITE_API_URL ||
+                     (window.location.hostname === 'localhost'
+                       ? 'https://viewminder.vercel.app'
+                       : window.location.origin);
 
       const response = await fetch(`${apiUrl}/api/create-checkout-session`, {
         method: 'POST',
@@ -420,6 +424,7 @@ function App() {
                     name="inspectionDate"
                     value={formData.inspectionDate}
                     onChange={handleInputChange}
+                    min={new Date().toISOString().split('T')[0]}
                     className={inputClasses}
                     required
                   />
@@ -428,15 +433,14 @@ function App() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1" htmlFor="inspectionTime">Inspection Time (e.g., 10:15 AM)</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1" htmlFor="inspectionTime">Inspection Time</label>
                 <input
-                  type="text"
+                  type="time"
                   id="inspectionTime"
                   name="inspectionTime"
                   value={formData.inspectionTime}
                   onChange={handleInputChange}
                   className={inputClasses}
-                  placeholder="e.g., 10:15 AM"
                   required
                 />
                 {errors.inspectionTime && <p className="mt-1 text-sm text-red-600">{errors.inspectionTime}</p>}
