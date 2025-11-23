@@ -9,6 +9,7 @@ function StatusTracker() {
   const [status, setStatus] = useState(null);
   const [errors, setErrors] = useState({});
   const [isSearching, setIsSearching] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
 
   // Handle input changes
   const handleChange = (e) => {
@@ -41,6 +42,7 @@ function StatusTracker() {
     if (!validateForm()) return;
 
     setIsSearching(true);
+    setHasSearched(true);
 
     // Simulate API lookup with delay
     setTimeout(() => {
@@ -58,7 +60,7 @@ function StatusTracker() {
     assigned: {
       label: 'Agent Assigned',
       icon: CheckCircle,
-      bgColor: 'bg-primary-500',
+      bgColor: 'bg-teal-500',
       textColor: 'text-white',
       message: 'Your local ViewMinder agent has been assigned and is ready to attend.'
     },
@@ -81,28 +83,28 @@ function StatusTracker() {
   const currentStatus = status ? statusConfig[status] : null;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-50">
       {/* Header */}
-      <div className="bg-primary-600 text-white py-6">
+      <div className="bg-gradient-to-r from-teal-600 to-teal-700 text-white py-8">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <a href="/" className="inline-flex items-center text-primary-100 hover:text-white mb-4">
+          <a href="/" className="inline-flex items-center text-teal-100 hover:text-white mb-4">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Home
           </a>
           <h1 className="text-3xl sm:text-4xl font-bold">Check Booking Status</h1>
-          <p className="text-primary-100 mt-2">Track your ViewMinder inspection in real-time</p>
+          <p className="text-teal-100 mt-2">Track your ViewMinder inspection in real-time</p>
         </div>
       </div>
 
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Search Form */}
-        <div className="bg-white rounded-lg shadow-md p-6 sm:p-8 mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Enter Your Booking Details</h2>
+        <div className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8 mb-8 border-t-8 border-teal-600">
+          <h2 className="text-2xl font-bold text-slate-800 mb-6">Enter Your Booking Details</h2>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-2">
                 Email Address *
               </label>
               <input
@@ -111,8 +113,8 @@ function StatusTracker() {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
-                  errors.email ? 'border-red-500' : 'border-gray-300'
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent ${
+                  errors.email ? 'border-red-500' : 'border-slate-300'
                 }`}
                 placeholder="email@example.com"
               />
@@ -122,7 +124,7 @@ function StatusTracker() {
             </div>
 
             <div>
-              <label htmlFor="bookingId" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="bookingId" className="block text-sm font-medium text-slate-700 mb-2">
                 Stripe Payment Reference or Booking ID *
               </label>
               <input
@@ -131,15 +133,15 @@ function StatusTracker() {
                 name="bookingId"
                 value={formData.bookingId}
                 onChange={handleChange}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
-                  errors.bookingId ? 'border-red-500' : 'border-gray-300'
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent ${
+                  errors.bookingId ? 'border-red-500' : 'border-slate-300'
                 }`}
                 placeholder="cs_test_... or booking reference"
               />
               {errors.bookingId && (
                 <p className="mt-1 text-sm text-red-600">{errors.bookingId}</p>
               )}
-              <p className="mt-2 text-xs text-gray-500">
+              <p className="mt-2 text-xs text-slate-500">
                 You can find this in your confirmation email from Stripe
               </p>
             </div>
@@ -147,7 +149,7 @@ function StatusTracker() {
             <button
               type="submit"
               disabled={isSearching}
-              className="w-full bg-primary-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-primary-700 focus:outline-none focus:ring-4 focus:ring-primary-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+              className="w-full bg-teal-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-teal-700 focus:outline-none focus:ring-4 focus:ring-teal-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
             >
               {isSearching ? (
                 <>
@@ -203,14 +205,14 @@ function StatusTracker() {
         )}
 
         {/* Help Section */}
-        <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
-          <h3 className="font-semibold text-gray-900 mb-2">Need Help?</h3>
-          <p className="text-gray-700 text-sm mb-3">
+        <div className="mt-8 bg-teal-50 border border-teal-200 rounded-lg p-6">
+          <h3 className="font-semibold text-slate-900 mb-2">Need Help?</h3>
+          <p className="text-slate-700 text-sm mb-3">
             If you can't find your booking or have questions about your inspection:
           </p>
           <a
             href="mailto:support@viewminder.com.au"
-            className="text-primary-600 hover:text-primary-700 font-medium text-sm"
+            className="text-teal-600 hover:text-teal-700 font-medium text-sm"
           >
             Contact Support: support@viewminder.com.au
           </a>

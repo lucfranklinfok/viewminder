@@ -125,27 +125,27 @@ function Apply() {
             Application Received!
           </h1>
 
-          <p className="text-lg text-gray-700 mb-8">
+          <p className="text-lg text-slate-700 mb-8">
             We will be in touch within 48 hours for onboarding. Thank you for applying.
           </p>
 
-          <div className="bg-primary-50 rounded-lg p-6 mb-8 text-left">
+          <div className="bg-teal-50 rounded-lg p-6 mb-8 text-left">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">What Happens Next?</h2>
-            <ul className="space-y-3 text-gray-700">
+            <ul className="space-y-3 text-slate-700">
               <li className="flex items-start">
-                <span className="font-bold text-primary-600 mr-2">1.</span>
+                <span className="font-bold text-teal-600 mr-2">1.</span>
                 <span>We'll review your application and verify your ABN</span>
               </li>
               <li className="flex items-start">
-                <span className="font-bold text-primary-600 mr-2">2.</span>
+                <span className="font-bold text-teal-600 mr-2">2.</span>
                 <span>Our team will contact you within 48 hours via email or phone</span>
               </li>
               <li className="flex items-start">
-                <span className="font-bold text-primary-600 mr-2">3.</span>
+                <span className="font-bold text-teal-600 mr-2">3.</span>
                 <span>You'll receive onboarding materials and training resources</span>
               </li>
               <li className="flex items-start">
-                <span className="font-bold text-primary-600 mr-2">4.</span>
+                <span className="font-bold text-teal-600 mr-2">4.</span>
                 <span>Start earning by attending inspections in your area</span>
               </li>
             </ul>
@@ -153,7 +153,7 @@ function Apply() {
 
           <a
             href="/"
-            className="inline-flex items-center justify-center bg-primary-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-primary-700 transition-colors"
+            className="inline-flex items-center justify-center bg-teal-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-teal-700 transition-colors"
           >
             <ArrowLeft className="w-5 h-5 mr-2" />
             Return to Home
@@ -165,18 +165,18 @@ function Apply() {
 
   // Application form
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-50">
       {/* Header */}
-      <div className="bg-gradient-to-r from-primary-600 to-primary-700 text-white py-8">
+      <div className="bg-gradient-to-r from-teal-600 to-teal-700 text-white py-8">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <a href="/" className="inline-flex items-center text-primary-100 hover:text-white mb-4">
+          <a href="/" className="inline-flex items-center text-teal-100 hover:text-white mb-4">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Home
           </a>
           <h1 className="text-3xl sm:text-4xl font-bold mb-3">
             Join the ViewMinder Network
           </h1>
-          <p className="text-xl text-primary-100">
+          <p className="text-xl text-teal-100">
             Become a Certified Proxy
           </p>
         </div>
@@ -186,36 +186,36 @@ function Apply() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Intro */}
         <div className="bg-white rounded-lg shadow-md p-6 sm:p-8 mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Why Join ViewMinder?</h2>
+          <h2 className="text-2xl font-bold text-slate-900 mb-4">Why Join ViewMinder?</h2>
           <div className="grid sm:grid-cols-3 gap-4 mb-6">
-            <div className="text-center p-4 bg-primary-50 rounded-lg">
-              <div className="text-3xl font-bold text-primary-600 mb-1">$40-90</div>
-              <div className="text-sm text-gray-700">Per Inspection</div>
+            <div className="text-center p-4 bg-teal-50 rounded-lg">
+              <div className="text-3xl font-bold text-teal-600 mb-1">$40-90</div>
+              <div className="text-sm text-slate-700">Per Inspection</div>
             </div>
-            <div className="text-center p-4 bg-primary-50 rounded-lg">
-              <div className="text-3xl font-bold text-primary-600 mb-1">Flexible</div>
-              <div className="text-sm text-gray-700">Choose Your Hours</div>
+            <div className="text-center p-4 bg-teal-50 rounded-lg">
+              <div className="text-3xl font-bold text-teal-600 mb-1">Flexible</div>
+              <div className="text-sm text-slate-700">Choose Your Hours</div>
             </div>
-            <div className="text-center p-4 bg-primary-50 rounded-lg">
-              <div className="text-3xl font-bold text-primary-600 mb-1">Local</div>
-              <div className="text-sm text-gray-700">Your Suburbs</div>
+            <div className="text-center p-4 bg-teal-50 rounded-lg">
+              <div className="text-3xl font-bold text-teal-600 mb-1">Local</div>
+              <div className="text-sm text-slate-700">Your Suburbs</div>
             </div>
           </div>
-          <p className="text-gray-700">
+          <p className="text-slate-700">
             Help Sydney renters secure their dream home while earning income on your own schedule. Perfect for real estate professionals, photographers, or anyone with great communication skills.
           </p>
         </div>
 
         {/* Application Form */}
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6 sm:p-8 space-y-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Application Form</h2>
+        <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8 space-y-6 border-t-8 border-teal-600">
+          <h2 className="text-2xl font-bold text-slate-900 mb-6">Application Form</h2>
 
           {/* Personal Information */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900">Personal Information</h3>
+            <h3 className="text-lg font-semibold text-slate-900">Personal Information</h3>
 
             <div>
-              <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="fullName" className="block text-sm font-medium text-slate-700 mb-2">
                 Full Name *
               </label>
               <input
@@ -224,8 +224,8 @@ function Apply() {
                 name="fullName"
                 value={formData.fullName}
                 onChange={handleChange}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
-                  errors.fullName ? 'border-red-500' : 'border-gray-300'
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent ${
+                  errors.fullName ? 'border-red-500' : 'border-slate-300'
                 }`}
                 placeholder="John Smith"
               />
@@ -235,7 +235,7 @@ function Apply() {
             </div>
 
             <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="phone" className="block text-sm font-medium text-slate-700 mb-2">
                 Phone Number *
               </label>
               <input
@@ -244,8 +244,8 @@ function Apply() {
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
-                  errors.phone ? 'border-red-500' : 'border-gray-300'
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent ${
+                  errors.phone ? 'border-red-500' : 'border-slate-300'
                 }`}
                 placeholder="0412 345 678"
               />
@@ -255,7 +255,7 @@ function Apply() {
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-2">
                 Email Address *
               </label>
               <input
@@ -264,8 +264,8 @@ function Apply() {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
-                  errors.email ? 'border-red-500' : 'border-gray-300'
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent ${
+                  errors.email ? 'border-red-500' : 'border-slate-300'
                 }`}
                 placeholder="john@example.com"
               />
@@ -281,7 +281,7 @@ function Apply() {
 
             {/* ABN Question */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">
+              <label className="block text-sm font-medium text-slate-700 mb-3">
                 Do you currently hold an active Australian Business Number (ABN)? *
               </label>
               <div className="space-y-2">
@@ -293,9 +293,9 @@ function Apply() {
                     value="yes"
                     checked={formData.hasABN === 'yes'}
                     onChange={handleChange}
-                    className="w-4 h-4 text-primary-600 focus:ring-primary-500"
+                    className="w-4 h-4 text-teal-600 focus:ring-teal-500"
                   />
-                  <span className="ml-3 text-gray-700">Yes, I have an active ABN</span>
+                  <span className="ml-3 text-slate-700">Yes, I have an active ABN</span>
                 </label>
                 <label className="flex items-center cursor-pointer">
                   <input
@@ -304,9 +304,9 @@ function Apply() {
                     value="no"
                     checked={formData.hasABN === 'no'}
                     onChange={handleChange}
-                    className="w-4 h-4 text-primary-600 focus:ring-primary-500"
+                    className="w-4 h-4 text-teal-600 focus:ring-teal-500"
                   />
-                  <span className="ml-3 text-gray-700">No, I don't have an ABN</span>
+                  <span className="ml-3 text-slate-700">No, I don't have an ABN</span>
                 </label>
               </div>
               {errors.hasABN && (
@@ -325,11 +325,11 @@ function Apply() {
                   name="hasSmartphone"
                   checked={formData.hasSmartphone}
                   onChange={handleChange}
-                  className={`mt-1 w-5 h-5 text-primary-600 rounded focus:ring-2 focus:ring-primary-500 ${
-                    errors.hasSmartphone ? 'border-red-500' : 'border-gray-300'
+                  className={`mt-1 w-5 h-5 text-teal-600 rounded focus:ring-2 focus:ring-teal-500 ${
+                    errors.hasSmartphone ? 'border-red-500' : 'border-slate-300'
                   }`}
                 />
-                <span className="ml-3 text-sm text-gray-700">
+                <span className="ml-3 text-sm text-slate-700">
                   I have reliable access to a smartphone with high-quality video recording *
                 </span>
               </label>
@@ -340,7 +340,7 @@ function Apply() {
 
             {/* Suburbs Question */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">
+              <label className="block text-sm font-medium text-slate-700 mb-3">
                 Which Sydney suburbs are you primarily available in? (Select all that apply) *
               </label>
               <div className="grid sm:grid-cols-2 gap-3">
@@ -349,17 +349,17 @@ function Apply() {
                     key={suburb.id}
                     className={`flex items-center p-3 border rounded-lg cursor-pointer transition-all ${
                       formData.suburbs.includes(suburb.id)
-                        ? 'border-primary-500 bg-primary-50'
-                        : 'border-gray-300 hover:border-primary-300'
+                        ? 'border-primary-500 bg-teal-50'
+                        : 'border-slate-300 hover:border-primary-300'
                     }`}
                   >
                     <input
                       type="checkbox"
                       checked={formData.suburbs.includes(suburb.id)}
                       onChange={() => handleSuburbChange(suburb.id)}
-                      className="w-4 h-4 text-primary-600 rounded focus:ring-primary-500"
+                      className="w-4 h-4 text-teal-600 rounded focus:ring-teal-500"
                     />
-                    <span className="ml-3 text-sm text-gray-700">{suburb.label}</span>
+                    <span className="ml-3 text-sm text-slate-700">{suburb.label}</span>
                   </label>
                 ))}
               </div>
@@ -374,7 +374,7 @@ function Apply() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-primary-600 text-white py-4 px-8 rounded-lg text-lg font-semibold hover:bg-primary-700 focus:outline-none focus:ring-4 focus:ring-primary-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+              className="w-full bg-teal-600 text-white py-4 px-8 rounded-lg text-lg font-semibold hover:bg-teal-700 focus:outline-none focus:ring-4 focus:ring-primary-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
             >
               {isSubmitting ? (
                 <>
