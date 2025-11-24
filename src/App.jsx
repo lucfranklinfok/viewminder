@@ -5,7 +5,17 @@ import {
   Clipboard,
   MapPin,
   Smartphone,
-  Loader2
+  Loader2,
+  Droplet,
+  Layers,
+  Mic,
+  Zap,
+  Sun,
+  Home,
+  Thermometer,
+  Wifi,
+  Users,
+  Trash
 } from 'lucide-react';
 import SuccessPage from './SuccessPage';
 import StatusTracker from './StatusTracker';
@@ -92,6 +102,25 @@ function App() {
       highlight: false,
       features: ['Printed Cover Letter', 'Live Video/HD Recording', '15-Point Quality Report']
     }
+  ];
+
+  // Reality Check List
+  const realityCheckList = [
+    { point: "Mobile Signal Strength Check (Telstra/Optus/Vodafone)", icon: Smartphone },
+    { point: "Water Pressure Check (Shower/Sink)", icon: Droplet },
+    { point: "Hidden Mould & Damp Visual Check (Behind Blinds/Under Sinks)", icon: Layers },
+    { point: "Noise Levels Assessment (Street, Neighbors, Construction)", icon: Mic },
+    { point: "All Appliances Tested (Oven, Dishwasher, A/C)", icon: Zap },
+    { point: "Sunlight Orientation and Natural Light (AM/PM)", icon: Sun },
+    { point: "Storage Space Confirmation (Built-ins, Linen, Pantry)", icon: Home },
+    { point: "Condition of Carpets and Walls (Minor Dents/Stains)", icon: Clipboard },
+    { point: "Power Outlet Functionality (Quick check of 2-3 outlets)", icon: Zap },
+    { point: "Window/Door Seal Check (Drafts/Security Visual)", icon: Thermometer },
+    { point: "NBN/Internet Connection Type Visual Check (Where possible)", icon: Wifi },
+    { point: "Pest/Insect Visual Presence (Obvious signs)", icon: Users },
+    { point: "Bin/Recycling Location & Access Check", icon: Trash },
+    { point: "Proximity to Transport (Bus stop, train station)", icon: MapPin },
+    { point: "Leaking Taps/Toilets (Quick running test)", icon: Droplet },
   ];
 
   // Helper to get the current pricing details
@@ -291,6 +320,27 @@ function App() {
                 <Clipboard className="w-10 h-10 text-teal-600 mx-auto mb-4" />
                 <h4 className="text-xl font-semibold text-slate-800 mb-2">15-Point Reality Check</h4>
                 <p className="text-slate-600">We check what photos hide: water pressure, mold smells, phone signal strength, and noise levels. The details that matter.</p>
+              </div>
+            </div>
+          </section>
+
+          {/* 15-Point Reality Check Details Section */}
+          <section className="max-w-6xl mx-auto px-4 py-8">
+            <div className="bg-gradient-to-br from-teal-50 to-slate-50 rounded-3xl p-8 md:p-12 shadow-xl border-2 border-teal-200">
+              <h3 className="text-3xl font-bold text-center text-slate-800 mb-3">Our Comprehensive 15-Point Reality Check</h3>
+              <p className="text-center text-slate-600 mb-10 max-w-3xl mx-auto">
+                We inspect what photos can't show you. Every Standard & Premium inspection includes these critical assessments to help you make an informed decision.
+              </p>
+              <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4">
+                {realityCheckList.map((item, index) => {
+                  const IconComponent = item.icon;
+                  return (
+                    <div key={index} className="flex items-start p-4 bg-white rounded-lg shadow-md border border-slate-200 hover:border-teal-400 transition-all duration-200">
+                      <IconComponent className="w-5 h-5 text-teal-600 mr-3 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm text-slate-700 font-medium">{item.point}</p>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </section>

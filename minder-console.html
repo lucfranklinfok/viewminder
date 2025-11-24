@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ViewMinder - Minder Inspection Console</title>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: #1e293b;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+      color: white;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      margin-bottom: 8px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .header h1 i {
+      font-size: 28px;
+    }
+
+    .header p {
+      font-size: 14px;
+      opacity: 0.95;
+    }
+
+    .form-container {
+      padding: 24px;
+    }
+
+    .section {
+      margin-bottom: 28px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #0f766e;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #99f6e4;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    .input-label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #334155;
+      font-size: 15px;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+
+    .input-field:focus {
+      outline: none;
+      border-color: #14b8a6;
+    }
+
+    .checkpoint {
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .checkpoint-title {
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 12px;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+
+    .checkpoint-number {
+      display: inline-block;
+      background: #14b8a6;
+      color: white;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 24px;
+      font-size: 13px;
+      margin-right: 8px;
+      font-weight: 700;
+    }
+
+    .radio-group {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .radio-option {
+      flex: 1;
+      position: relative;
+    }
+
+    .radio-option input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+
+    .radio-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px;
+      border: 2px solid #cbd5e1;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+
+    .radio-label i {
+      font-size: 16px;
+    }
+
+    .radio-option input[type="radio"]:checked + .radio-label.good {
+      background: #d1fae5;
+      border-color: #10b981;
+      color: #065f46;
+    }
+
+    .radio-option input[type="radio"]:checked + .radio-label.issue {
+      background: #fed7aa;
+      border-color: #f59e0b;
+      color: #92400e;
+    }
+
+    .radio-label:active {
+      transform: scale(0.98);
+    }
+
+    .notes-container {
+      display: none;
+      margin-top: 12px;
+      animation: slideDown 0.3s ease;
+    }
+
+    .notes-container.visible {
+      display: block;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .notes-field {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #fbbf24;
+      border-radius: 8px;
+      font-size: 15px;
+      min-height: 80px;
+      resize: vertical;
+      font-family: inherit;
+    }
+
+    .notes-field:focus {
+      outline: none;
+      border-color: #f59e0b;
+    }
+
+    .notes-label {
+      display: block;
+      font-size: 13px;
+      color: #92400e;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(13, 148, 136, 0.4);
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .success-message {
+      display: none;
+      background: #d1fae5;
+      border: 2px solid #10b981;
+      color: #065f46;
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      text-align: center;
+      font-weight: 600;
+      animation: slideDown 0.3s ease;
+    }
+
+    .success-message.visible {
+      display: block;
+    }
+
+    .error-message {
+      display: none;
+      background: #fee2e2;
+      border: 2px solid #ef4444;
+      color: #991b1b;
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      text-align: center;
+      font-weight: 600;
+      animation: slideDown 0.3s ease;
+    }
+
+    .error-message.visible {
+      display: block;
+    }
+
+    .required {
+      color: #ef4444;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 12px;
+      }
+
+      .form-container {
+        padding: 16px;
+      }
+
+      .header h1 {
+        font-size: 20px;
+      }
+
+      .checkpoint {
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1><i class="fas fa-clipboard-check"></i> Minder Inspection Console</h1>
+      <p>Complete the 15-Point Reality Check</p>
+    </div>
+
+    <div class="form-container">
+      <div id="successMessage" class="success-message">
+        <i class="fas fa-check-circle"></i> Report submitted successfully! Data logged to console.
+      </div>
+
+      <div id="errorMessage" class="error-message">
+        <i class="fas fa-exclamation-triangle"></i> Please fill in all required fields and complete all checkpoints.
+      </div>
+
+      <form id="inspectionForm">
+        <!-- Job Information Section -->
+        <div class="section">
+          <h2 class="section-title">Job Information</h2>
+
+          <div class="input-group">
+            <label for="jobId" class="input-label">
+              Job Reference ID <span class="required">*</span>
+            </label>
+            <input
+              type="text"
+              id="jobId"
+              name="jobId"
+              class="input-field"
+              placeholder="e.g., VM-2025-001"
+              required
+            >
+          </div>
+
+          <div class="input-group">
+            <label for="minderId" class="input-label">
+              Minder Name/ID <span class="required">*</span>
+            </label>
+            <input
+              type="text"
+              id="minderId"
+              name="minderId"
+              class="input-field"
+              placeholder="e.g., John Smith"
+              required
+            >
+          </div>
+        </div>
+
+        <!-- 15-Point Checklist Section -->
+        <div class="section">
+          <h2 class="section-title">15-Point Reality Check</h2>
+
+          <!-- Checkpoint 1 -->
+          <div class="checkpoint">
+            <div class="checkpoint-title">
+              <span class="checkpoint-number">1</span>
+              Mobile Signal Strength Check (Telstra/Optus/Vodafone)
+            </div>
+            <div class="radio-group">
+              <div class="radio-option">
+                <input type="radio" name="check1" value="good" id="check1-good" required>
+                <label for="check1-good" class="radio-label good"><i class="fas fa-check-circle"></i> Good/Normal</label>
+              </div>
+              <div class="radio-option">
+                <input type="radio" name="check1" value="issue" id="check1-issue">
+                <label for="check1-issue" class="radio-label issue"><i class="fas fa-exclamation-circle"></i> Issue/Note</label>
+              </div>
+            </div>
+            <div id="notes1" class="notes-container">
+              <label class="notes-label">Specific details (optional):</label>
+              <textarea class="notes-field" placeholder="Describe the issue or add notes..."></textarea>
+            </div>
+          </div>
+
+          <!-- Checkpoint 2 -->
+          <div class="checkpoint">
+            <div class="checkpoint-title">
+              <span class="checkpoint-number">2</span>
+              Water Pressure Check (Shower/Sink)
+            </div>
+            <div class="radio-group">
+              <div class="radio-option">
+                <input type="radio" name="check2" value="good" id="check2-good" required>
+                <label for="check2-good" class="radio-label good"><i class="fas fa-check-circle"></i> Good/Normal</label>
+              </div>
+              <div class="radio-option">
+                <input type="radio" name="check2" value="issue" id="check2-issue">
+                <label for="check2-issue" class="radio-label issue"><i class="fas fa-exclamation-circle"></i> Issue/Note</label>
+              </div>
+            </div>
+            <div id="notes2" class="notes-container">
+              <label class="notes-label">Specific details (optional):</label>
+              <textarea class="notes-field" placeholder="Describe the issue or add notes..."></textarea>
+            </div>
+          </div>
+
+          <!-- Checkpoint 3 -->
+          <div class="checkpoint">
+            <div class="checkpoint-title">
+              <span class="checkpoint-number">3</span>
+              Hidden Mould & Damp Visual Check (Behind Blinds/Under Sinks)
+            </div>
+            <div class="radio-group">
+              <div class="radio-option">
+                <input type="radio" name="check3" value="good" id="check3-good" required>
+                <label for="check3-good" class="radio-label good"><i class="fas fa-check-circle"></i> Good/Normal</label>
+              </div>
+              <div class="radio-option">
+                <input type="radio" name="check3" value="issue" id="check3-issue">
+                <label for="check3-issue" class="radio-label issue"><i class="fas fa-exclamation-circle"></i> Issue/Note</label>
+              </div>
+            </div>
+            <div id="notes3" class="notes-container">
+              <label class="notes-label">Specific details (optional):</label>
+              <textarea class="notes-field" placeholder="Describe the issue or add notes..."></textarea>
+            </div>
+          </div>
+
+          <!-- Checkpoint 4 -->
+          <div class="checkpoint">
+            <div class="checkpoint-title">
+              <span class="checkpoint-number">4</span>
+              Noise Levels Assessment (Street, Neighbors, Construction)
+            </div>
+            <div class="radio-group">
+              <div class="radio-option">
+                <input type="radio" name="check4" value="good" id="check4-good" required>
+                <label for="check4-good" class="radio-label good"><i class="fas fa-check-circle"></i> Good/Normal</label>
+              </div>
+              <div class="radio-option">
+                <input type="radio" name="check4" value="issue" id="check4-issue">
+                <label for="check4-issue" class="radio-label issue"><i class="fas fa-exclamation-circle"></i> Issue/Note</label>
+              </div>
+            </div>
+            <div id="notes4" class="notes-container">
+              <label class="notes-label">Specific details (optional):</label>
+              <textarea class="notes-field" placeholder="Describe the issue or add notes..."></textarea>
+            </div>
+          </div>
+
+          <!-- Checkpoint 5 -->
+          <div class="checkpoint">
+            <div class="checkpoint-title">
+              <span class="checkpoint-number">5</span>
+              All Appliances Tested (Oven, Dishwasher, A/C)
+            </div>
+            <div class="radio-group">
+              <div class="radio-option">
+                <input type="radio" name="check5" value="good" id="check5-good" required>
+                <label for="check5-good" class="radio-label good"><i class="fas fa-check-circle"></i> Good/Normal</label>
+              </div>
+              <div class="radio-option">
+                <input type="radio" name="check5" value="issue" id="check5-issue">
+                <label for="check5-issue" class="radio-label issue"><i class="fas fa-exclamation-circle"></i> Issue/Note</label>
+              </div>
+            </div>
+            <div id="notes5" class="notes-container">
+              <label class="notes-label">Specific details (optional):</label>
+              <textarea class="notes-field" placeholder="Describe the issue or add notes..."></textarea>
+            </div>
+          </div>
+
+          <!-- Checkpoint 6 -->
+          <div class="checkpoint">
+            <div class="checkpoint-title">
+              <span class="checkpoint-number">6</span>
+              Sunlight Orientation and Natural Light (AM/PM)
+            </div>
+            <div class="radio-group">
+              <div class="radio-option">
+                <input type="radio" name="check6" value="good" id="check6-good" required>
+                <label for="check6-good" class="radio-label good"><i class="fas fa-check-circle"></i> Good/Normal</label>
+              </div>
+              <div class="radio-option">
+                <input type="radio" name="check6" value="issue" id="check6-issue">
+                <label for="check6-issue" class="radio-label issue"><i class="fas fa-exclamation-circle"></i> Issue/Note</label>
+              </div>
+            </div>
+            <div id="notes6" class="notes-container">
+              <label class="notes-label">Specific details (optional):</label>
+              <textarea class="notes-field" placeholder="Describe the issue or add notes..."></textarea>
+            </div>
+          </div>
+
+          <!-- Checkpoint 7 -->
+          <div class="checkpoint">
+            <div class="checkpoint-title">
+              <span class="checkpoint-number">7</span>
+              Storage Space Confirmation (Built-ins, Linen, Pantry)
+            </div>
+            <div class="radio-group">
+              <div class="radio-option">
+                <input type="radio" name="check7" value="good" id="check7-good" required>
+                <label for="check7-good" class="radio-label good"><i class="fas fa-check-circle"></i> Good/Normal</label>
+              </div>
+              <div class="radio-option">
+                <input type="radio" name="check7" value="issue" id="check7-issue">
+                <label for="check7-issue" class="radio-label issue"><i class="fas fa-exclamation-circle"></i> Issue/Note</label>
+              </div>
+            </div>
+            <div id="notes7" class="notes-container">
+              <label class="notes-label">Specific details (optional):</label>
+              <textarea class="notes-field" placeholder="Describe the issue or add notes..."></textarea>
+            </div>
+          </div>
+
+          <!-- Checkpoint 8 -->
+          <div class="checkpoint">
+            <div class="checkpoint-title">
+              <span class="checkpoint-number">8</span>
+              Condition of Carpets and Walls (Minor Dents/Stains)
+            </div>
+            <div class="radio-group">
+              <div class="radio-option">
+                <input type="radio" name="check8" value="good" id="check8-good" required>
+                <label for="check8-good" class="radio-label good"><i class="fas fa-check-circle"></i> Good/Normal</label>
+              </div>
+              <div class="radio-option">
+                <input type="radio" name="check8" value="issue" id="check8-issue">
+                <label for="check8-issue" class="radio-label issue"><i class="fas fa-exclamation-circle"></i> Issue/Note</label>
+              </div>
+            </div>
+            <div id="notes8" class="notes-container">
+              <label class="notes-label">Specific details (optional):</label>
+              <textarea class="notes-field" placeholder="Describe the issue or add notes..."></textarea>
+            </div>
+          </div>
+
+          <!-- Checkpoint 9 -->
+          <div class="checkpoint">
+            <div class="checkpoint-title">
+              <span class="checkpoint-number">9</span>
+              Power Outlet Functionality (Quick check of 2-3 outlets)
+            </div>
+            <div class="radio-group">
+              <div class="radio-option">
+                <input type="radio" name="check9" value="good" id="check9-good" required>
+                <label for="check9-good" class="radio-label good"><i class="fas fa-check-circle"></i> Good/Normal</label>
+              </div>
+              <div class="radio-option">
+                <input type="radio" name="check9" value="issue" id="check9-issue">
+                <label for="check9-issue" class="radio-label issue"><i class="fas fa-exclamation-circle"></i> Issue/Note</label>
+              </div>
+            </div>
+            <div id="notes9" class="notes-container">
+              <label class="notes-label">Specific details (optional):</label>
+              <textarea class="notes-field" placeholder="Describe the issue or add notes..."></textarea>
+            </div>
+          </div>
+
+          <!-- Checkpoint 10 -->
+          <div class="checkpoint">
+            <div class="checkpoint-title">
+              <span class="checkpoint-number">10</span>
+              Window/Door Seal Check (Drafts/Security Visual)
+            </div>
+            <div class="radio-group">
+              <div class="radio-option">
+                <input type="radio" name="check10" value="good" id="check10-good" required>
+                <label for="check10-good" class="radio-label good"><i class="fas fa-check-circle"></i> Good/Normal</label>
+              </div>
+              <div class="radio-option">
+                <input type="radio" name="check10" value="issue" id="check10-issue">
+                <label for="check10-issue" class="radio-label issue"><i class="fas fa-exclamation-circle"></i> Issue/Note</label>
+              </div>
+            </div>
+            <div id="notes10" class="notes-container">
+              <label class="notes-label">Specific details (optional):</label>
+              <textarea class="notes-field" placeholder="Describe the issue or add notes..."></textarea>
+            </div>
+          </div>
+
+          <!-- Checkpoint 11 -->
+          <div class="checkpoint">
+            <div class="checkpoint-title">
+              <span class="checkpoint-number">11</span>
+              NBN/Internet Connection Type Visual Check (Where possible)
+            </div>
+            <div class="radio-group">
+              <div class="radio-option">
+                <input type="radio" name="check11" value="good" id="check11-good" required>
+                <label for="check11-good" class="radio-label good"><i class="fas fa-check-circle"></i> Good/Normal</label>
+              </div>
+              <div class="radio-option">
+                <input type="radio" name="check11" value="issue" id="check11-issue">
+                <label for="check11-issue" class="radio-label issue"><i class="fas fa-exclamation-circle"></i> Issue/Note</label>
+              </div>
+            </div>
+            <div id="notes11" class="notes-container">
+              <label class="notes-label">Specific details (optional):</label>
+              <textarea class="notes-field" placeholder="Describe the issue or add notes..."></textarea>
+            </div>
+          </div>
+
+          <!-- Checkpoint 12 -->
+          <div class="checkpoint">
+            <div class="checkpoint-title">
+              <span class="checkpoint-number">12</span>
+              Pest/Insect Visual Presence (Obvious signs)
+            </div>
+            <div class="radio-group">
+              <div class="radio-option">
+                <input type="radio" name="check12" value="good" id="check12-good" required>
+                <label for="check12-good" class="radio-label good"><i class="fas fa-check-circle"></i> Good/Normal</label>
+              </div>
+              <div class="radio-option">
+                <input type="radio" name="check12" value="issue" id="check12-issue">
+                <label for="check12-issue" class="radio-label issue"><i class="fas fa-exclamation-circle"></i> Issue/Note</label>
+              </div>
+            </div>
+            <div id="notes12" class="notes-container">
+              <label class="notes-label">Specific details (optional):</label>
+              <textarea class="notes-field" placeholder="Describe the issue or add notes..."></textarea>
+            </div>
+          </div>
+
+          <!-- Checkpoint 13 -->
+          <div class="checkpoint">
+            <div class="checkpoint-title">
+              <span class="checkpoint-number">13</span>
+              Bin/Recycling Location & Access Check
+            </div>
+            <div class="radio-group">
+              <div class="radio-option">
+                <input type="radio" name="check13" value="good" id="check13-good" required>
+                <label for="check13-good" class="radio-label good"><i class="fas fa-check-circle"></i> Good/Normal</label>
+              </div>
+              <div class="radio-option">
+                <input type="radio" name="check13" value="issue" id="check13-issue">
+                <label for="check13-issue" class="radio-label issue"><i class="fas fa-exclamation-circle"></i> Issue/Note</label>
+              </div>
+            </div>
+            <div id="notes13" class="notes-container">
+              <label class="notes-label">Specific details (optional):</label>
+              <textarea class="notes-field" placeholder="Describe the issue or add notes..."></textarea>
+            </div>
+          </div>
+
+          <!-- Checkpoint 14 -->
+          <div class="checkpoint">
+            <div class="checkpoint-title">
+              <span class="checkpoint-number">14</span>
+              Proximity to Transport (Bus stop, train station)
+            </div>
+            <div class="radio-group">
+              <div class="radio-option">
+                <input type="radio" name="check14" value="good" id="check14-good" required>
+                <label for="check14-good" class="radio-label good"><i class="fas fa-check-circle"></i> Good/Normal</label>
+              </div>
+              <div class="radio-option">
+                <input type="radio" name="check14" value="issue" id="check14-issue">
+                <label for="check14-issue" class="radio-label issue"><i class="fas fa-exclamation-circle"></i> Issue/Note</label>
+              </div>
+            </div>
+            <div id="notes14" class="notes-container">
+              <label class="notes-label">Specific details (optional):</label>
+              <textarea class="notes-field" placeholder="Describe the issue or add notes..."></textarea>
+            </div>
+          </div>
+
+          <!-- Checkpoint 15 -->
+          <div class="checkpoint">
+            <div class="checkpoint-title">
+              <span class="checkpoint-number">15</span>
+              Leaking Taps/Toilets (Quick running test)
+            </div>
+            <div class="radio-group">
+              <div class="radio-option">
+                <input type="radio" name="check15" value="good" id="check15-good" required>
+                <label for="check15-good" class="radio-label good"><i class="fas fa-check-circle"></i> Good/Normal</label>
+              </div>
+              <div class="radio-option">
+                <input type="radio" name="check15" value="issue" id="check15-issue">
+                <label for="check15-issue" class="radio-label issue"><i class="fas fa-exclamation-circle"></i> Issue/Note</label>
+              </div>
+            </div>
+            <div id="notes15" class="notes-container">
+              <label class="notes-label">Specific details (optional):</label>
+              <textarea class="notes-field" placeholder="Describe the issue or add notes..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="submit-btn">Submit Report</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Handle radio button changes to show/hide notes fields
+    for (let i = 1; i <= 15; i++) {
+      const issueRadio = document.getElementById(`check${i}-issue`);
+      const goodRadio = document.getElementById(`check${i}-good`);
+      const notesContainer = document.getElementById(`notes${i}`);
+
+      issueRadio.addEventListener('change', function() {
+        if (this.checked) {
+          notesContainer.classList.add('visible');
+        }
+      });
+
+      goodRadio.addEventListener('change', function() {
+        if (this.checked) {
+          notesContainer.classList.remove('visible');
+          // Clear the notes field when switching back to "Good"
+          notesContainer.querySelector('textarea').value = '';
+        }
+      });
+    }
+
+    // Handle form submission
+    document.getElementById('inspectionForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const successMessage = document.getElementById('successMessage');
+      const errorMessage = document.getElementById('errorMessage');
+
+      // Hide previous messages
+      successMessage.classList.remove('visible');
+      errorMessage.classList.remove('visible');
+
+      // Get job information
+      const jobId = document.getElementById('jobId').value.trim();
+      const minderId = document.getElementById('minderId').value.trim();
+
+      if (!jobId || !minderId) {
+        errorMessage.classList.add('visible');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
+      // Collect all checkpoint data
+      const checkpoints = [];
+      let allChecked = true;
+
+      for (let i = 1; i <= 15; i++) {
+        const goodRadio = document.querySelector(`input[name="check${i}"][value="good"]`);
+        const issueRadio = document.querySelector(`input[name="check${i}"][value="issue"]`);
+        const notesField = document.querySelector(`#notes${i} textarea`);
+
+        if (!goodRadio.checked && !issueRadio.checked) {
+          allChecked = false;
+          break;
+        }
+
+        const status = goodRadio.checked ? 'good' : 'issue';
+        const notes = issueRadio.checked ? notesField.value.trim() : '';
+
+        checkpoints.push({
+          number: i,
+          status: status,
+          notes: notes
+        });
+      }
+
+      if (!allChecked) {
+        errorMessage.classList.add('visible');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
+      // Create the report object
+      const report = {
+        jobReferenceId: jobId,
+        minderNameId: minderId,
+        timestamp: new Date().toISOString(),
+        checkpoints: checkpoints,
+        summary: {
+          totalChecks: 15,
+          goodCount: checkpoints.filter(c => c.status === 'good').length,
+          issueCount: checkpoints.filter(c => c.status === 'issue').length
+        }
+      };
+
+      // Log to console (MVP behavior)
+      console.log('=== INSPECTION REPORT SUBMITTED ===');
+      console.log(JSON.stringify(report, null, 2));
+      console.log('===================================');
+
+      // Show success message
+      successMessage.classList.add('visible');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Optional: Reset form after a delay
+      setTimeout(() => {
+        if (confirm('Report submitted successfully! Do you want to start a new inspection?')) {
+          this.reset();
+          // Hide all notes containers
+          for (let i = 1; i <= 15; i++) {
+            document.getElementById(`notes${i}`).classList.remove('visible');
+          }
+          successMessage.classList.remove('visible');
+        }
+      }, 1500);
+    });
+  </script>
+</body>
+</html>
