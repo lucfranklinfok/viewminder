@@ -191,7 +191,15 @@ function App() {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Handle form submission with Stripe Checkout
+  // Generate unique booking ID
+  const generateBookingId = () => {
+    // Create a unique ID using timestamp + random string
+    const timestamp = Date.now();
+    const randomStr = Math.random().toString(36).substring(2, 9);
+    return `VM-${timestamp}-${randomStr}`;
+  };
+
+  // Handle form submission with two-webhook architecture
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -205,11 +213,55 @@ function App() {
     setIsProcessing(true);
 
     try {
-      // Get the selected pricing tier details
+      // STEP 1: Generate unique booking ID
+      const bookingId = generateBookingId();
       const selectedTier = pricingTiers.find(tier => tier.id === formData.pricingTier);
 
-      // Call Vercel serverless function to create Stripe Checkout session
-      // Use production API when running locally (dev server doesn't have API routes)
+      // STEP 2: Send Webhook 1 - Booking Submission (Lead Capture)
+      const zapierWebhookUrl = import.meta.env.VITE_ZAPIER_BOOKING_WEBHOOK_URL;
+
+      if (zapierWebhookUrl) {
+        const bookingData = {
+          bookingId,
+          timestamp: new Date().toISOString(),
+          customerName: formData.name,
+          customerEmail: formData.email,
+          customerMobile: formData.mobile,
+          suburb: formData.suburb,
+          propertyLink: formData.propertyLink,
+          inspectionDate: formData.inspectionDate,
+          inspectionTime: formData.inspectionTime,
+          pricingTier: formData.pricingTier,
+          pricingTierName: selectedTier.name,
+          price: selectedTier.price,
+          status: 'pending_payment'
+        };
+
+        try {
+          const webhookResponse = await fetch(zapierWebhookUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(bookingData),
+          });
+
+          if (!webhookResponse.ok) {
+            throw new Error('Webhook submission failed');
+          }
+
+          console.log('Booking data sent to Zapier successfully');
+        } catch (webhookError) {
+          console.error('Webhook 1 error:', webhookError);
+          setIsProcessing(false);
+          alert('Unable to process booking. Please try again or contact support@viewminder.com.au');
+          return; // Don't proceed to Stripe if webhook fails
+        }
+      } else {
+        console.warn('Zapier webhook URL not configured, skipping Webhook 1');
+      }
+
+      // STEP 3: Create Stripe Checkout Session with booking ID in metadata
       const apiUrl = import.meta.env.VITE_API_URL ||
                      (window.location.hostname === 'localhost'
                        ? 'https://viewminder.vercel.app'
@@ -226,6 +278,7 @@ function App() {
           customerEmail: formData.email,
           customerName: formData.name,
           metadata: {
+            bookingId, // CRITICAL: This links W-1 and W-2
             mobile: formData.mobile,
             suburb: formData.suburb,
             propertyLink: formData.propertyLink,
@@ -242,7 +295,7 @@ function App() {
 
       const { url } = await response.json();
 
-      // Redirect to Stripe Checkout URL
+      // STEP 4: Redirect to Stripe Checkout
       window.location.href = url;
     } catch (error) {
       console.error('Checkout error:', error);
