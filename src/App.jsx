@@ -238,12 +238,21 @@ function App() {
         };
 
         try {
-          const webhookResponse = await fetch(zapierWebhookUrl, {
+          // Use server-side proxy for webhook to avoid CORS issues
+          const apiUrl = import.meta.env.VITE_API_URL ||
+                         (window.location.hostname === 'localhost'
+                           ? 'https://viewminder.vercel.app'
+                           : window.location.origin);
+
+          const webhookResponse = await fetch(`${apiUrl}/api/send-webhook`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify(bookingData),
+            body: JSON.stringify({
+              webhookUrl: zapierWebhookUrl,
+              data: bookingData
+            }),
           });
 
           if (!webhookResponse.ok) {
