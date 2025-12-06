@@ -125,7 +125,7 @@ function AdminDashboard() {
         <div className="bg-white p-8 rounded-lg shadow-xl max-w-md w-full">
           <div className="text-center mb-6">
             <Lock className="w-12 h-12 text-teal-600 mx-auto mb-4" />
-            <h1 className="text-2xl font-bold text-slate-800">Admin Access</h1>
+            <h1 className="text-2xl font-bold text-slate-800">ViewMinder Admin</h1>
             <p className="text-slate-600 mt-2">Enter password to continue</p>
           </div>
 
