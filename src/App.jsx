@@ -22,6 +22,7 @@ import StatusTracker from './StatusTracker';
 import Apply from './Apply';
 import Terms from './Terms';
 import Privacy from './Privacy';
+import AdminDashboard from './AdminDashboard';
 
 function App() {
   // Simple routing based on URL path
@@ -29,6 +30,10 @@ function App() {
   const urlParams = new URLSearchParams(window.location.search);
 
   // Route to different pages
+  if (path === '/admin' || path === '/admin/') {
+    return <AdminDashboard />;
+  }
+
   if (path === '/status' || path === '/status/') {
     return <StatusTracker />;
   }
