@@ -14,10 +14,16 @@ import {
   DollarSign,
   ExternalLink,
   Loader2,
-  Lock
+  Lock,
+  Upload,
+  File,
+  Trash2,
+  Image,
+  Video
 } from 'lucide-react';
-import { db } from './firebase';
+import { db, storage } from './firebase';
 import { collection, query, getDocs, doc, updateDoc, orderBy } from 'firebase/firestore';
+import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
 
 function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -30,6 +36,8 @@ function AdminDashboard() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [updating, setUpdating] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploading, setUploading] = useState(false);
 
   // Fetch all bookings from Firestore
   const fetchBookings = async () => {
@@ -193,6 +201,136 @@ function AdminDashboard() {
     } finally {
       setUpdating(false);
     }
+  };
+
+  // Handle file upload
+  const handleFileUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+
+    setUploading(true);
+    setUploadProgress(0);
+
+    try {
+      const bookingId = selectedBooking.bookingId;
+      const uploadedFiles = [];
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const timestamp = Date.now();
+        const fileName = `${timestamp}_${file.name}`;
+        const storageRef = ref(storage, `inspections/${bookingId}/${fileName}`);
+
+        // Upload file
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        await new Promise((resolve, reject) => {
+          uploadTask.on(
+            'state_changed',
+            (snapshot) => {
+              const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              setUploadProgress(Math.round(progress));
+            },
+            (error) => {
+              console.error('Upload error:', error);
+              reject(error);
+            },
+            async () => {
+              const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+              uploadedFiles.push({
+                name: file.name,
+                url: downloadURL,
+                type: file.type,
+                size: file.size,
+                uploadedAt: new Date().toISOString()
+              });
+              resolve();
+            }
+          );
+        });
+      }
+
+      // Update Firestore with file URLs
+      const appId = import.meta.env.VITE_APP_ID || 'viewminder';
+      const bookingRef = doc(db, 'artifacts', appId, 'public', 'data', 'jobs', selectedBooking.id);
+      const currentFiles = selectedBooking.files || [];
+
+      await updateDoc(bookingRef, {
+        files: [...currentFiles, ...uploadedFiles],
+        updatedAt: new Date().toISOString()
+      });
+
+      // Update local state
+      const updatedBooking = {
+        ...selectedBooking,
+        files: [...currentFiles, ...uploadedFiles]
+      };
+      setSelectedBooking(updatedBooking);
+      setBookings(prev => prev.map(booking =>
+        booking.id === selectedBooking.id ? updatedBooking : booking
+      ));
+
+      alert(`Successfully uploaded ${uploadedFiles.length} file(s)`);
+    } catch (error) {
+      console.error('Error uploading files:', error);
+      alert('Failed to upload files. Please try again.');
+    } finally {
+      setUploading(false);
+      setUploadProgress(0);
+      e.target.value = ''; // Reset file input
+    }
+  };
+
+  // Handle file delete
+  const handleFileDelete = async (file, index) => {
+    if (!confirm(`Are you sure you want to delete ${file.name}?`)) return;
+
+    try {
+      // Extract file path from URL
+      const filePath = decodeURIComponent(file.url.split('/o/')[1].split('?')[0]);
+      const storageRef = ref(storage, filePath);
+
+      // Delete from Firebase Storage
+      await deleteObject(storageRef);
+
+      // Update Firestore
+      const appId = import.meta.env.VITE_APP_ID || 'viewminder';
+      const bookingRef = doc(db, 'artifacts', appId, 'public', 'data', 'jobs', selectedBooking.id);
+      const updatedFiles = selectedBooking.files.filter((_, i) => i !== index);
+
+      await updateDoc(bookingRef, {
+        files: updatedFiles,
+        updatedAt: new Date().toISOString()
+      });
+
+      // Update local state
+      const updatedBooking = { ...selectedBooking, files: updatedFiles };
+      setSelectedBooking(updatedBooking);
+      setBookings(prev => prev.map(booking =>
+        booking.id === selectedBooking.id ? updatedBooking : booking
+      ));
+
+      alert('File deleted successfully');
+    } catch (error) {
+      console.error('Error deleting file:', error);
+      alert('Failed to delete file. Please try again.');
+    }
+  };
+
+  // Get file icon based on type
+  const getFileIcon = (fileType) => {
+    if (fileType.startsWith('image/')) return Image;
+    if (fileType.startsWith('video/')) return Video;
+    return File;
+  };
+
+  // Format file size
+  const formatFileSize = (bytes) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
   };
 
   // Status badge component
@@ -547,6 +685,82 @@ function AdminDashboard() {
                     {updating ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : 'Cancelled'}
                   </button>
                 </div>
+              </div>
+
+              {/* File Upload Section */}
+              <div>
+                <h4 className="text-sm font-semibold text-slate-600 uppercase mb-3">Inspection Files</h4>
+
+                {/* Upload Button */}
+                <div className="mb-4">
+                  <label className="flex items-center justify-center px-4 py-3 border-2 border-dashed border-slate-300 rounded-lg cursor-pointer hover:border-teal-500 hover:bg-teal-50 transition">
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*,video/*,.pdf"
+                      onChange={handleFileUpload}
+                      disabled={uploading}
+                      className="hidden"
+                    />
+                    <Upload className="w-5 h-5 text-slate-600 mr-2" />
+                    <span className="text-sm text-slate-600">
+                      {uploading ? `Uploading... ${uploadProgress}%` : 'Upload Photos/Videos'}
+                    </span>
+                  </label>
+                  {uploading && (
+                    <div className="mt-2 w-full bg-slate-200 rounded-full h-2">
+                      <div
+                        className="bg-teal-600 h-2 rounded-full transition-all duration-300"
+                        style={{ width: `${uploadProgress}%` }}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {/* Uploaded Files List */}
+                {selectedBooking.files && selectedBooking.files.length > 0 ? (
+                  <div className="space-y-2">
+                    {selectedBooking.files.map((file, index) => {
+                      const FileIcon = getFileIcon(file.type);
+                      return (
+                        <div
+                          key={index}
+                          className="flex items-center justify-between p-3 bg-slate-50 rounded-lg hover:bg-slate-100 transition"
+                        >
+                          <div className="flex items-center space-x-3 flex-1 min-w-0">
+                            <FileIcon className="w-5 h-5 text-teal-600 flex-shrink-0" />
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium text-slate-900 truncate">{file.name}</p>
+                              <p className="text-xs text-slate-500">
+                                {formatFileSize(file.size)} • {formatDate(file.uploadedAt)}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-center space-x-2 ml-2">
+                            <a
+                              href={file.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="p-2 text-teal-600 hover:bg-teal-100 rounded transition"
+                              title="View file"
+                            >
+                              <ExternalLink className="w-4 h-4" />
+                            </a>
+                            <button
+                              onClick={() => handleFileDelete(file, index)}
+                              className="p-2 text-red-600 hover:bg-red-100 rounded transition"
+                              title="Delete file"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <p className="text-sm text-slate-500 text-center py-4">No files uploaded yet</p>
+                )}
               </div>
             </div>
           </div>
