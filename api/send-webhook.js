@@ -30,11 +30,14 @@ export default async function handler(req, res) {
     }
 
     // Validate webhook URL (basic security check)
-    if (!webhookUrl.startsWith('https://hooks.zapier.com/')) {
-      return res.status(400).json({ error: 'Invalid webhook URL' });
+    const isZapier = webhookUrl.startsWith('https://hooks.zapier.com/');
+    const isMake = webhookUrl.startsWith('https://hook.') && webhookUrl.includes('.make.com/');
+
+    if (!isZapier && !isMake) {
+      return res.status(400).json({ error: 'Invalid webhook URL. Only Zapier and Make.com webhooks are allowed.' });
     }
 
-    // Forward the webhook request to Zapier
+    // Forward the webhook request to Zapier/Make.com
     const response = await fetch(webhookUrl, {
       method: 'POST',
       headers: {
