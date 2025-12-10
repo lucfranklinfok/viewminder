@@ -353,18 +353,35 @@ function AdminDashboard() {
   };
 
   // Format date
-  const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
+  const formatDate = (dateValue) => {
+    if (!dateValue) return 'N/A';
     try {
-      return new Date(dateString).toLocaleDateString('en-AU', {
+      // Handle Firestore Timestamp objects
+      let date;
+      if (dateValue && typeof dateValue === 'object' && dateValue.seconds) {
+        // Firestore Timestamp object
+        date = new Date(dateValue.seconds * 1000);
+      } else if (typeof dateValue === 'string') {
+        // ISO string
+        date = new Date(dateValue);
+      } else {
+        return 'Invalid Date';
+      }
+
+      if (isNaN(date.getTime())) {
+        return 'Invalid Date';
+      }
+
+      return date.toLocaleDateString('en-AU', {
         year: 'numeric',
         month: 'short',
         day: 'numeric',
         hour: '2-digit',
         minute: '2-digit'
       });
-    } catch {
-      return dateString;
+    } catch (error) {
+      console.error('Date formatting error:', error, dateValue);
+      return 'Invalid Date';
     }
   };
 
