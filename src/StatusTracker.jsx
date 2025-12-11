@@ -277,6 +277,17 @@ function StatusTracker() {
           const jobData = docSnapshot.data();
           console.log('Job data received:', jobData);
 
+          // SECURITY: Validate email matches
+          const enteredEmail = formData.email.trim().toLowerCase();
+          const storedEmail = (jobData.customerEmail || '').trim().toLowerCase();
+
+          if (enteredEmail !== storedEmail) {
+            setStatus(null);
+            setStatusData(null);
+            alert('Booking not found or email does not match. Please check your details and try again.');
+            return;
+          }
+
           // Map Firestore status to our status keys
           let mappedStatus = null;
           if (jobData.status) {
