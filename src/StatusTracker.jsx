@@ -201,12 +201,14 @@ function StatusTracker() {
 
     if (!validateForm()) return;
 
+    // IMPORTANT: Clear previous status immediately before any async operations
+    setStatus(null);
+    setStatusData(null);
+
     // Guard clause: Check if Firebase is ready
     if (!isAuthReady) {
       setIsSearching(true);
       setHasSearched(true);
-      setStatus(null);
-      setStatusData(null);
       // Will show "connecting" state while Firebase initializes
       setTimeout(() => {
         if (isAuthReady) {
