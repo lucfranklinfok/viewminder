@@ -461,7 +461,7 @@ function StatusTracker() {
         </div>
 
         {/* Status Display */}
-        {currentStatus && (
+        {!isSearching && currentStatus && (
           <>
             <div className={`${currentStatus.bgColor} ${currentStatus.textColor} rounded-lg shadow-lg p-8 sm:p-10 transform transition-all duration-500 animate-fadeIn`}>
               <div className="flex items-start">
